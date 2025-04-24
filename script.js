@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 confirmDelete: "Are you sure you want to delete this submission?",
                 noDataToExport: "No data to export"
             },
+            
             fr: {
                 welcomeTitle: "Bienvenue à KMC",
                 companyName: "Kabura Multiservice Company",
