@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Money Transfer Calculator</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body>
+    <!-- Language Selection Panel -->
+    <div class="panel active" id="languagePanel">
+        <img src="Logo.png" alt="Logo" class="logo" />
+        <div class="welcome-content">
+            <h1 id="welcomeTitle">Welcome To KMC</h1>
+            <h2 id="companyName">Kabura Multiservice Company</h2>
+        </div>
+        <div class="language-buttons">
+            <button class="btn btn-primary" onclick="selectLanguage('en')">
+                <i class="fas fa-language"></i> English
+            </button>
+            <button class="btn btn-primary" onclick="selectLanguage('fr')">
+                <i class="fas fa-language"></i> Français
+            </button>
+            <button class="btn btn-primary" onclick="selectLanguage('sw')">
+                <i class="fas fa-language"></i> Swahili
+            </button>
+        </div>
+    </div>
+
+    <!-- Welcome Panel -->
+    <div class="panel" id="welcomePanel">
+        <div class="panel-header">
+            <button class="btn btn-small btn-outline" onclick="showLanguagePanel()">
+                <i class="fas fa-globe"></i> <span class="lang-code">EN/FR/SW</span>
+            </button>
+        </div>
+        <img src="Logo.png" alt="Logo" class="logo" />
+        <div class="welcome-content">
+            <h1 id="welcomeTitle">Welcome To KMC</h1>
+            <h2 id="companyName">Kabura Multiservice Company</h2>
+            <p class="welcome-message" id="welcomeMessage">This is a Transfer Calculator</p>
+        </div>
+        <div class="welcome-buttons">
+            <button class="btn btn-primary" onclick="showCalculatorPanel()" id="nextBtn">
+                <i class="fas fa-arrow-right"></i> <span id="nextBtnText">Next</span>
+            </button>
+            <button class="btn btn-outline" onclick="showAdminLogin()" id="adminLoginBtn">
+                <i class="fas fa-lock"></i> <span id="adminLoginText">Admin Login</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Calculator Panel -->
+    <div class="panel" id="calculatorPanel">
+        <div class="panel-header">
+            <button class="btn btn-small btn-outline" onclick="showWelcomePanel()">
+                <i class="fas fa-arrow-left"></i> <span id="backBtnTextCalc">Back</span>
+            </button>
+            <button class="btn btn-small btn-outline" onclick="showLanguagePanel()">
+                <i class="fas fa-globe"></i> <span class="lang-code">EN/FR/SW</span>
+            </button>
+        </div>
+        <img src="Logo.png" alt="Logo" class="logo" />
+        <div class="panel-header">
+            <h2 class="panel-title" id="calculatorTitle">Money Transfer Calculator</h2>
+        </div>
+
+        <div class="form-group">
+            <label for="fromCountry" id="fromCountryLabel">From Country</label>
+            <div class="country-selector">
+                <div class="flag" id="fromFlag"></div>
+                <select id="fromCountry" class="form-control" onchange="updateFlag('from')">
+                    <option value="egypt">Egypt (EGP)</option>
+                    <option value="burundi">Burundi (BIF)</option>
+                    <option value="rwanda">Rwanda (RWF)</option>
+                    <option value="kenya">Kenya (KES)</option>
+                    <option value="tanzania">Tanzania (TZS)</option>
+                    <option value="uganda">Uganda (UGX)</option>
+                    <option value="drc">DR Congo (CDF)</option>
+                    <option value="togo">Togo (XOF)</option>
+                    <option value="saudi">Saudi Arabia (SAR)</option>
+                    <option value="belgium">Belgium (EUR)</option>
+                    <option value="france">France (EUR)</option>
+                    <option value="netherlands">Netherlands (EUR)</option>
+                    <option value="canada">Canada (CAD)</option>
+                    <option value="usa">USA (USD)</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="btn btn-icon btn-swap" onclick="swapCountries()">
+            <i class="fas fa-exchange-alt"></i>
+        </button>
+
+        <div class="form-group">
+            <label for="toCountry" id="toCountryLabel">To Country</label>
+            <div class="country-selector">
+                <div class="flag" id="toFlag"></div>
+                <select id="toCountry" class="form-control" onchange="updateFlag('to')">
+                    <option value="burundi">Burundi (BIF)</option>
+                    <option value="rwanda">Rwanda (RWF)</option>
+                    <option value="kenya">Kenya (KES)</option>
+                    <option value="tanzania">Tanzania (TZS)</option>
+                    <option value="uganda">Uganda (UGX)</option>
+                    <option value="drc">DR Congo (CDF)</option>
+                    <option value="togo">Togo (XOF)</option>
+                    <option value="saudi">Saudi Arabia (SAR)</option>
+                    <option value="belgium">Belgium (EUR)</option>
+                    <option value="france">France (EUR)</option>
+                    <option value="netherlands">Netherlands (EUR)</option>
+                    <option value="canada">Canada (CAD)</option>
+                    <option value="usa">USA (USD)</option>
+                    <option value="egypt" selected>Egypt (EGP)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="amount" id="amountLabel">Amount</label>
+            <div class="input-with-icon">
+                <i class="fas fa-money-bill-wave"></i>
+                <input type="number" step="0.01" id="amount" class="form-control" placeholder="Enter amount" />
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="calculateTransfer()" id="calculateBtn">
+            <i class="fas fa-calculator"></i> <span id="calculateBtnText">Calculate Transfer</span>
+        </button>
+
+        <div class="result-box" id="result">
+            <div class="result-flags">
+                <div class="result-flag-container">
+                    <div class="flag-large" id="resultFromFlag"></div>
+                    <div id="resultFromAmount"></div>
+                </div>
+                <div class="conversion-arrow">↓</div>
+                <div class="result-flag-container">
+                    <div class="flag-large" id="resultToFlag"></div>
+                    <div id="resultToAmount"></div>
+                </div>
+            </div>
+            <div id="exchangeRate" class="rate-display"></div>
+        </div>
+
+        <div class="action-section">
+            <button class="btn btn-success" onclick="openTransferForm()" id="requestBtn">
+                <i class="fas fa-paper-plane"></i> <span id="requestBtnText">Request Transfer</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Transfer Request Form -->
+    <div class="panel" id="transferPage">
+        <div class="panel-header">
+            <button class="btn btn-small btn-outline" onclick="showCalculatorPanel()">
+                <i class="fas fa-arrow-left"></i> <span id="backBtnTextTransfer">Back to Calculator</span>
+            </button>
+            <button class="btn btn-small btn-outline" onclick="showLanguagePanel()">
+                <i class="fas fa-globe"></i> <span class="lang-code">EN/FR/SW</span>
+            </button>
+        </div>
+        
+        <div class="transfer-form-container">
+            <h2><i class="fas fa-file-alt"></i> <span id="transferFormTitle">Transfer Request Form</span></h2>
+            
+            <form id="transferForm">
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" id="formStep1">
+                    <div class="form-group">
+                        <label for="fullName"><i class="fas fa-user"></i> <span id="fullNameLabel">First and Last Name:</span></label>
+                        <input type="text" id="fullName" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone"><i class="fas fa-phone"></i> <span id="phoneLabel">Your Phone Number:</span></label>
+                        <input type="tel" id="phone" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="transferAmount"><i class="fas fa-money-bill-wave"></i> <span id="amountLabelTransfer">Amount to Transfer:</span></label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <input type="number" id="transferAmount" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-exchange-alt"></i> <span id="directionLabel">Transfer Direction:</span></label>
+                        <div class="option-buttons">
+                            <button type="button" class="option-btn" onclick="selectTransferDirection('egypt-out')">
+                                <span id="egyptOutOption">From Egypt to Outside</span>
+                            </button>
+                            <button type="button" class="option-btn" onclick="selectTransferDirection('out-egypt')">
+                                <span id="outEgyptOption">From Outside to Egypt</span>
+                            </button>
+                        </div>
+                        <input type="hidden" id="transferDirection" required>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-outline" onclick="showCalculatorPanel()">
+                            <i class="fas fa-times"></i> <span id="cancelBtnText">Cancel</span>
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextFormStep()">
+                            <span id="nextBtnTextForm">Next</span> <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Egypt to Outside -->
+                <div class="form-step" id="formStep2-egypt-out">
+                    <div class="form-group">
+                        <label><i class="fas fa-map-marker-alt"></i> <span id="collectionLabel">Collection Point in Egypt:</span></label>
+                        <div class="option-buttons">
+                            <button type="button" class="option-btn" onclick="selectLocation('Mohandessen')"><span>Mohandessen</span></button>
+                            <button type="button" class="option-btn" onclick="selectLocation('Tabba')"><span>Tabba</span></button>
+                            <button type="button" class="option-btn" onclick="selectLocation('Maadi')"><span>Maadi</span></button>
+                            <button type="button" class="option-btn" onclick="selectLocation('Marg')"><span>Marg</span></button>
+                            <button type="button" class="option-btn" onclick="selectLocation('Faisal')"><span>Faisal</span></button>
+                            <button type="button" class="option-btn" onclick="selectLocation('Sakan Masr')"><span>Sakan Masr</span></button>
+                            <button type="button" class="option-btn" onclick="selectLocation('Bouth')"><span>Bouth</span></button>
+                        </div>
+                        <input type="hidden" id="egyptLocation" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><i class="fas fa-globe"></i> <span id="destinationLabel">Destination Country:</span></label>
+                        <div class="option-buttons" id="destinationCountries">
+                            <!-- Countries will be populated by JavaScript -->
+                        </div>
+                        <input type="hidden" id="destinationCountry" required>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-outline" onclick="prevFormStep()">
+                            <i class="fas fa-arrow-left"></i> <span id="backBtnTextForm">Back</span>
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane"></i> <span id="submitBtnText">Submit Request</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Outside to Egypt -->
+                <div class="form-step" id="formStep2-out-egypt">
+                    <div class="form-group">
+                        <label><i class="fas fa-globe"></i> <span id="whichCountryLabel">Which Country?</span></label>
+                        <div class="option-buttons" id="sourceCountries">
+                            <!-- Countries will be populated by JavaScript -->
+                        </div>
+                        <input type="hidden" id="sourceCountry" required>
+                    </div>
+                    
+                    <!-- Burundi Options -->
+                    <div class="form-group" id="burundiOptions" style="display:none">
+                        <label><i class="fas fa-money-bill-transfer"></i> <span id="methodLabel">Method of Transfer:</span></label>
+                        <div class="option-buttons">
+                            <button type="button" class="option-btn" onclick="selectTransferMethod('cash')"><span id="cashOption">Cash</span></button>
+                            <button type="button" class="option-btn" onclick="selectTransferMethod('mobile')"><span id="mobileOption">Mobile Money Transfer</span></button>
+                            <button type="button" class="option-btn" onclick="selectTransferMethod('bank')"><span id="bankOption">Bank Transfer</span></button>
+                        </div>
+                        <input type="hidden" id="transferMethod">
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="btn btn-outline" onclick="prevFormStep()">
+                            <i class="fas fa-arrow-left"></i> <span id="backBtnTextForm2">Back</span>
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane"></i> <span id="submitBtnText2">Submit Request</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal" id="adminLoginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-lock"></i> <span id="adminLoginTitle">Admin Login</span></h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="adminPassword"><i class="fas fa-key"></i> <span id="passwordLabel">Password:</span></label>
+                    <input type="password" id="adminPassword" class="form-control" required />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="document.getElementById('adminLoginModal').style.display='none'">
+                    <span id="cancelBtnTextModal">Cancel</span>
+                </button>
+                <button class="btn btn-primary" onclick="adminLogin()">
+                    <span id="loginBtnText">Login</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> <span id="successTitle">Success!</span></h3>
+            </div>
+            <div class="modal-body">
+                <p id="successMessage">Your transfer request has been submitted successfully.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="document.getElementById('successModal').style.display='none'; showPanel('calculator');">
+                    <span id="okBtnText">OK</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard Panel -->
+    <div class="panel" id="adminPanel">
+        <div class="panel-header">
+            <button class="btn btn-small btn-outline" onclick="showCalculatorPanel()">
+                <i class="fas fa-arrow-left"></i> <span id="backBtnTextAdmin">Back</span>
+            </button>
+            <button class="btn btn-small btn-danger" onclick="adminLogout()">
+                <i class="fas fa-sign-out-alt"></i> <span id="logoutBtnText">Logout</span>
+            </button>
+        </div>
+        
+        <div class="admin-dashboard">
+            <h2 class="panel-title"><i class="fas fa-tachometer-alt"></i> <span id="adminDashboardTitle">Admin Dashboard</span></h2>
+            
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalRequests">0</div>
+                    <div class="stat-label"><i class="fas fa-paper-plane"></i> <span id="totalRequestsLabel">Total Requests</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="egyptOutRequests">0</div>
+                    <div class="stat-label"><i class="fas fa-arrow-up"></i> <span id="egyptOutLabel">Egypt to Outside</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="outEgyptRequests">0</div>
+                    <div class="stat-label"><i class="fas fa-arrow-down"></i> <span id="outEgyptLabel">Outside to Egypt</span></div>
+                </div>
+            </div>
+            
+            <div class="admin-controls">
+                <button class="btn btn-primary" onclick="refreshSubmissions()">
+                    <i class="fas fa-sync-alt"></i> <span id="refreshBtnText">Refresh</span>
+                </button>
+                <button class="btn btn-success" onclick="exportToCSV()">
+                    <i class="fas fa-file-export"></i> <span id="exportBtnText">Export to CSV</span>
+                </button>
+            </div>
+            
+            <div class="submissions-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><span id="nameHeader">Name</span></th>
+                            <th><span id="phoneHeader">Phone</span></th>
+                            <th><span id="amountHeader">Amount</span></th>
+                            <th><span id="directionHeader">Direction</span></th>
+                            <th><span id="dateHeader">Date</span></th>
+                            <th><span id="actionsHeader">Actions</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="submissions-list">
+                        <!-- Submissions will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Submission Modal -->
+    <div class="modal" id="viewSubmissionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-alt"></i> <span id="submissionDetailsTitle">Submission Details</span></h3>
+                <button class="btn btn-small btn-outline" onclick="document.getElementById('viewSubmissionModal').style.display='none'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="submissionDetailsContent">
+                <!-- Details will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
