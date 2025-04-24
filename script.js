@@ -614,71 +614,47 @@ document.addEventListener('DOMContentLoaded', function () {
         showPanel('transferPage');
     }
 
-    async function handleTransferSubmit(e) {
+    function handleTransferSubmit(e) {
         e.preventDefault();
         
-        const submitBtn = e.target.querySelector('button[type="submit"]');
-        const originalBtnText = submitBtn.innerHTML;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-
-        try {
-            const transferData = {
-                name: elements.transferForm.fullName.value,
-                phone: elements.transferForm.phone.value,
-                email: document.getElementById('email')?.value || '',
-                amount: elements.transferForm.transferAmount.value,
-                direction: document.getElementById('transferDirection').value,
-                location: document.getElementById('egyptLocation').value || '',
-                country: document.getElementById('destinationCountry').value || 
-                        document.getElementById('sourceCountry').value,
-                method: document.getElementById('transferMethod').value || ''
-            };
-
-            const response = await fetch(`${process.env.BACKEND_URL || '/api'}/submit-transfer`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(transferData)
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                // Store locally
-                state.transferRequests.push({
-                    ...transferData,
-                    id: result.reference,
-                    timestamp: new Date().toISOString()
-                });
-                localStorage.setItem('transferRequests', JSON.stringify(state.transferRequests));
-                
-                // Show success
-                document.getElementById('successMessage').textContent = 
-                    state.currentLanguage === 'en' ? `Transfer submitted! Reference: ${result.reference}` :
-                    state.currentLanguage === 'fr' ? `Transfert soumis! Référence: ${result.reference}` :
-                    `Uhamisho umewasilishwa! Kumbukumbu: ${result.reference}`;
-                document.getElementById('successModal').style.display = 'flex';
-                
-                // Reset form
-                e.target.reset();
-                document.getElementById('formStep1').classList.add('active');
-                document.querySelectorAll('.form-step.active').forEach(step => {
-                    if (!step.id.includes('Step1')) step.classList.remove('active');
-                });
-            } else {
-                throw new Error(result.message || 'Submission failed');
-            }
-        } catch (error) {
-            console.error('Submission error:', error);
-            alert(
-                state.currentLanguage === 'en' ? "Failed to submit transfer. Please try again." :
-                state.currentLanguage === 'fr' ? "Échec de la soumission du transfert. Veuillez réessayer." :
-                "Imeshindwa kuwasilisha uhamisho. Tafadhali jaribu tena."
-            );
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = originalBtnText;
+        // Get form data
+        const transferData = {
+            name: elements.transferForm.fullName.value,
+            phone: elements.transferForm.phone.value,
+            amount: elements.transferForm.transferAmount.value,
+            direction: document.getElementById('transferDirection').value,
+            egyptLocation: document.getElementById('egyptLocation').value,
+            destinationCountry: document.getElementById('destinationCountry').value,
+            sourceCountry: document.getElementById('sourceCountry').value,
+            transferMethod: document.getElementById('transferMethod').value,
+            timestamp: new Date().toISOString()
+        };
+        
+        state.transferRequests.push(transferData);
+        localStorage.setItem('transferRequests', JSON.stringify(state.transferRequests));
+        
+        const successMessage = state.currentLanguage === 'en' ? "Transfer request submitted successfully!" :
+                              state.currentLanguage === 'fr' ? "Demande de transfert soumise avec succès!" :
+                              "Ombi la uhamisho limewasilishwa kikamilifu!";
+        
+        document.getElementById('successMessage').textContent = successMessage;
+        document.getElementById('successModal').style.display = 'flex';
+        
+        // Reset form
+        e.target.reset();
+        document.getElementById('formStep1').classList.add('active');
+        const transferDirection = transferData.direction;
+        if (document.getElementById(`formStep2-${transferDirection}`)) {
+            document.getElementById(`formStep2-${transferDirection}`).classList.remove('active');
         }
+        
+        // Reset selected buttons
+        document.querySelectorAll('.option-btn.selected').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        // Hide Burundi options if shown
+        document.getElementById('burundiOptions').style.display = 'none';
     }
 
     function showAdminLogin() {
